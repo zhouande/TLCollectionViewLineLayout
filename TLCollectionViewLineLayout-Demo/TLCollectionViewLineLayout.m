@@ -27,10 +27,6 @@
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         self.sectionInset = UIEdgeInsetsMake(0, ABS(margin), 0, ABS(margin));
         self.minimumLineSpacing = 50;
-        
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:7 inSection:0]
-                                    atScrollPosition:UICollectionViewScrollPositionNone
-                                            animated:YES];
     }
     return self;
 }
@@ -52,12 +48,13 @@
     for (UICollectionViewLayoutAttributes *attributes in array) {
         
         if (CGRectIntersectsRect(attributes.frame, rect)) {
-            // 获取当前可见界面中心点与UICollectionViewLayoutAttributes的中心点之差
+
             CGFloat distance = CGRectGetMidX(visibleRect) - attributes.center.x;
-            CGFloat normalizedDistance = distance / ACTIVE_DISTANCE;
             
             if (ABS(distance) < ACTIVE_DISTANCE) {
+                CGFloat normalizedDistance = distance / ACTIVE_DISTANCE;
                 CGFloat zoom = 1 + ZOOM_FACTOR*(1 - ABS(normalizedDistance));
+                
                 attributes.transform3D = CATransform3DMakeScale(zoom, zoom, 1.0);
                 attributes.zIndex = 1;
             }
@@ -71,7 +68,7 @@
                                  withScrollingVelocity:(CGPoint)velocity {
     // proposedContentOffset是没有对齐到网格时本来应该停下的位置
     CGRect targetRect = CGRectMake(proposedContentOffset.x, 0.0, self.collectionView.bounds.size.width, self.collectionView.bounds.size.height);
-    NSArray* array = [super layoutAttributesForElementsInRect:targetRect];
+    NSArray *array = [super layoutAttributesForElementsInRect:targetRect];
     
     CGFloat offsetAdjustment = MAXFLOAT;
     //理论上应cell停下来的中心点
